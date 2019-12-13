@@ -24,7 +24,7 @@ public class ResistenciaGUI extends javax.swing.JFrame {
     public static double[][] matrizEcuaciones;
     public static double[] matrizResultados;
     public static double[] matrizSolucion;
-    public static MiguelSanchezSolver miguelResuelveSistema;
+    public static LinearSystemSolver ResuelveSistema;
     //public static ArrayList<Double> resistencias = new ArrayList<Double>();
     public static Vector<Double> resistencias = new Vector<Double>();
     public static agregarResistenciaForm agregar = new agregarResistenciaForm();
@@ -32,15 +32,32 @@ public class ResistenciaGUI extends javax.swing.JFrame {
     // Modelo de lista para hacer acciones con la lista.
     public static DefaultListModel listModel = new DefaultListModel();
 
+    // Metodo auxiliar que valida los datos antes de ser agregados.
     private static boolean validaDatosIngresados(int nodoA, int nodoB, double resValue) {
         if (nodoA == nodoB){ 
             JOptionPane.showMessageDialog(null, "Error. No puede conectar las "
                     + "dos terminales del componente al mismo nodo.\nPor favor"
                     + "Ingrese valores validos", 
                     "Error", JOptionPane.INFORMATION_MESSAGE);
-            return false; }
+            return false; 
+        }
+        if (nodoA <= 0 || nodoB <=0 || resValue <= 0 || nodos < 1){
+            JOptionPane.showMessageDialog(null, "Error. Datos no validos.\nPor "
+                    + "favor verifique los datos.", 
+                    "Error", JOptionPane.INFORMATION_MESSAGE);
+            return false;
+        }
         
+        if (nodoA > nodos || nodoB > nodos){
+            JOptionPane.showMessageDialog(null, "Error. Ninguno de los nodos puede ser "
+                    + "mayor al total de nodos.\nPor favor verifique los datos.", 
+                    "Error", JOptionPane.INFORMATION_MESSAGE);
+            return false;
+        }
         return true;
+        
+        
+        
     }
     
     /**
@@ -48,6 +65,7 @@ public class ResistenciaGUI extends javax.swing.JFrame {
      */
     public ResistenciaGUI() {
         initComponents();
+        this.setResizable(false);
     }
 
     /**
@@ -75,7 +93,7 @@ public class ResistenciaGUI extends javax.swing.JFrame {
         jTextArea2 = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Version de Prueba");
+        setTitle("Resistencia Equivalente");
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Calculador de Resistencia equivalente usando Kirckhoff"));
 
@@ -240,6 +258,7 @@ public class ResistenciaGUI extends javax.swing.JFrame {
         listaResistencia.setModel(new DefaultListModel());
         jTextArea1.setText("");
         jTextArea2.setText("");
+        lblNodos.setText(strlblNodos);
         
         // Pedir la cantidad de Nodos.
         try{
@@ -288,26 +307,30 @@ public class ResistenciaGUI extends javax.swing.JFrame {
     private void btnVerMatrizActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerMatrizActionPerformed
        
         String txt = "";
-       
-        double aux;
-        // Este ciclo es para redondear los valores de la matriz para mejor visualizacion.
-        for (int i = 0; i < matrizEcuaciones.length; i++){
-            for (int j = 0; j < matrizEcuaciones.length; j++){
-                 aux = matrizEcuaciones[i][j];
-                 aux = Math.round(aux*10.0)/10.0;
-                 txt = txt + Double.toString(aux) + "      ";
-            }
-            txt = txt + "\n";
-        } 
-        jTextArea1.setText(txt);  
+        if ( matrizEcuaciones == null) {
+            JOptionPane.showMessageDialog(null, "Error. No hay datos validos.\n"
+                 + "verifique los datos", "Error", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            double aux;
+            // Este ciclo es para redondear los valores de la matriz para mejor visualizacion.
+            for (int i = 0; i < matrizEcuaciones.length; i++){
+                for (int j = 0; j < matrizEcuaciones.length; j++){
+                     aux = matrizEcuaciones[i][j];
+                     aux = Math.round(aux*10.0)/10.0;
+                     txt = txt + Double.toString(aux) + "      ";
+                }
+                txt = txt + "\n";
+            } 
+            jTextArea1.setText(txt);  
+        }
     }//GEN-LAST:event_btnVerMatrizActionPerformed
 
     // Aca se resuelve el sistema de ecuaciones (la matriz)
     private void btnResolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResolverActionPerformed
         
         // En estas dos lineas se resuelven las ecuaciones.
-        miguelResuelveSistema = new MiguelSanchezSolver(matrizEcuaciones,matrizResultados);
-        matrizSolucion = miguelResuelveSistema.solveSystem(matrizEcuaciones, matrizResultados);
+       ResuelveSistema = new LinearSystemSolver(matrizEcuaciones,matrizResultados);
+        matrizSolucion = ResuelveSistema.solveSystem(matrizEcuaciones, matrizResultados);
         
         
         // Lo demas es solo para mostrar los datos.
@@ -383,6 +406,10 @@ public class ResistenciaGUI extends javax.swing.JFrame {
                     }
                 }
             }
+            
+            //Ahora habilita los botones verMatriz y resolverMatriz
+            btnVerMatriz.enable(true);
+            btnResolver.enable();
         
         // Luego agregare otros ciclos para llegar la tercera diagonal principal y la cuarta.
         // por si el profe quiere que explote. Cuando tenga el tiempo diseño el algoritmo para que
@@ -435,8 +462,8 @@ public class ResistenciaGUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddResistor;
     private javax.swing.JButton btnIniciar;
-    private javax.swing.JButton btnResolver;
-    private javax.swing.JButton btnVerMatriz;
+    private static javax.swing.JButton btnResolver;
+    private static javax.swing.JButton btnVerMatriz;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;

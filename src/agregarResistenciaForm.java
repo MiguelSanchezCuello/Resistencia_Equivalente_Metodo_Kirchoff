@@ -19,6 +19,7 @@ public class agregarResistenciaForm extends javax.swing.JFrame {
      */
     public agregarResistenciaForm() {
         initComponents();
+        this.setResizable(false);
     }
 
     /**
@@ -111,66 +112,52 @@ public class agregarResistenciaForm extends javax.swing.JFrame {
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
         // TODO add your handling code here:
-        String strNodoInicial = "1";
+        String strNodoInicial = "";
         String strNodoFinal = "" + ResistenciaGUI.nodos;
-        String strValorResistencia = "0";
+        String strValorResistencia = "";
         int nodoInicial = 1;
         int nodoFinal = ResistenciaGUI.nodos;
         double valorResistencia = 0;
-        boolean valido = false;
+        boolean validacion1 = false;
+        boolean validacion2 = false;
         boolean validacion3 = false;
         
-        do{
-            if (ResistenciaGUI.nodos == 0){
-                valido = true;
-                try{ 
-                    
-                    strValorResistencia = txtValorResistencia.getText();
-                    valorResistencia =Double.parseDouble(strValorResistencia);
-                    validacion3 = true;
-
-                } catch (NumberFormatException e){
-                    JOptionPane.showMessageDialog(null, "Error. El valor de la resistencia es invalido", "Error", JOptionPane.INFORMATION_MESSAGE);
-                }
-            } else {
-            
-                boolean validacion1 = false;
-                boolean validacion2 = false;
-                
-                try{ 
-                    strNodoInicial = txtNodoInicial.getText();
-                    nodoInicial = Integer.parseInt(strNodoInicial);
-                    validacion1 = true;
-
-                } catch (NumberFormatException e){
-                    JOptionPane.showMessageDialog(null, "Error. El Nodo Inicial debe ser Mayor que cero y menor que el nodo Final", "Error", JOptionPane.INFORMATION_MESSAGE);
-                }
-                
-                try{ 
-                    
-                    strNodoFinal = txtNodoFinal.getText();
-                    nodoFinal = Integer.parseInt(strNodoFinal);
-                    validacion2 = true;
-
-                } catch (NumberFormatException e){
-                    JOptionPane.showMessageDialog(null, "Error. El nodo final debe ser mayor que 1 y no debe sobrepasar el total de nodos", "Error", JOptionPane.INFORMATION_MESSAGE);
-                }  
-            
-            
-                try{ 
-                    
-                    strValorResistencia = txtValorResistencia.getText();
-                    valorResistencia =Double.parseDouble(strValorResistencia);
-                    validacion3 = true;
-
-                } catch (NumberFormatException e){
-                    JOptionPane.showMessageDialog(null, "Error. El valor de la resistencia es invalido", "Error", JOptionPane.INFORMATION_MESSAGE);
-                }
-            }
-            if (valido == true && validacion3 == true){ valido = true; }
-        } while (valido == false && validacion3 == false);
+       
         
-        ResistenciaGUI.agregarResistencia(nodoInicial,nodoFinal,valorResistencia);
+        try{ 
+            strNodoInicial = txtNodoInicial.getText();
+            nodoInicial = Integer.parseInt(strNodoInicial);
+            validacion1 = true;
+
+        } catch (NumberFormatException e){
+            JOptionPane.showMessageDialog(null, "Error. El Nodo Inicial debe ser Mayor que cero y menor que el nodo Final", "Error", JOptionPane.INFORMATION_MESSAGE);
+        }
+
+        try{ 
+
+            strNodoFinal = txtNodoFinal.getText();
+            nodoFinal = Integer.parseInt(strNodoFinal);
+            validacion2 = true;
+
+        } catch (NumberFormatException e){
+            JOptionPane.showMessageDialog(null, "Error. El nodo final debe ser mayor que 1 y no debe sobrepasar el total de nodos", "Error", JOptionPane.INFORMATION_MESSAGE);
+        }  
+
+        try{ 
+
+            strValorResistencia = txtValorResistencia.getText();
+            valorResistencia =Double.parseDouble(strValorResistencia);
+            validacion3 = true;
+
+        } catch (NumberFormatException e){
+            JOptionPane.showMessageDialog(null, "Error. El valor de la resistencia es invalido", "Error", JOptionPane.INFORMATION_MESSAGE);
+        }
+        if (validacion1 == true && validacion3 == true && validacion2 == true){ 
+            ResistenciaGUI.agregarResistencia(nodoInicial,nodoFinal,valorResistencia);
+        }
+       
+        
+        
         
         // FIN DE LA CODIFICACION DEL BOTON AGREGAR RESISTENCIA.
     }//GEN-LAST:event_btnAgregarActionPerformed

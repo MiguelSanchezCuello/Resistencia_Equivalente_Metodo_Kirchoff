@@ -8,13 +8,13 @@
  *
  * @author Coto
  */
-public class MiguelSanchezSolver implements SystemSolver {
+public class LinearSystemSolver implements SystemSolver {
     private double[][] incompleteMatrix;
 	private double[] coefficientMatrix;
 	private int rows;
 	private int columns;
 	
-	public MiguelSanchezSolver(double[][] a, double[] b) {
+	public LinearSystemSolver(double[][] a, double[] b) {
 		if (a == null || b == null)
 			throw new NullPointerException();
 		if (a.length != b.length)
@@ -174,7 +174,7 @@ public class MiguelSanchezSolver implements SystemSolver {
 	public static void main(String[] args) {
 		double[][] A = {{4, 1, 2, -3}, {3, -1, 0, 1}, {0, 1, -2, -1}, {3, 0, 1, -1}};
 		double [] b = {0, 1, -4, 0};
-		MiguelSanchezSolver s = new MiguelSanchezSolver(A,b);		
+		LinearSystemSolver s = new LinearSystemSolver(A,b);		
 		
 		double[][] ridotta = gaussElimination(s.getIncompleteMatrix());
 		
