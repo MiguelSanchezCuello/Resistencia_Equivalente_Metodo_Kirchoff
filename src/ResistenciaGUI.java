@@ -127,6 +127,7 @@ public class ResistenciaGUI extends javax.swing.JFrame {
         lblNodos.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         lblNodos.setText("0");
 
+        jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jScrollPane2.setViewportView(jTextArea1);
@@ -156,27 +157,23 @@ public class ResistenciaGUI extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnIniciar, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnAddResistor, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel2)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGap(10, 10, 10)
-                                        .addComponent(lblNodos)))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(btnVerMatriz)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
-                                    .addComponent(jScrollPane3)
-                                    .addComponent(btnResolver))))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(btnIniciar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(lblNodos)))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnVerMatriz)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)
+                            .addComponent(jScrollPane3)
+                            .addComponent(btnResolver)
+                            .addComponent(btnAddResistor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -329,7 +326,7 @@ public class ResistenciaGUI extends javax.swing.JFrame {
     private void btnResolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResolverActionPerformed
         
         // En estas dos lineas se resuelven las ecuaciones.
-       ResuelveSistema = new LinearSystemSolver(matrizEcuaciones,matrizResultados);
+        ResuelveSistema = new LinearSystemSolver(matrizEcuaciones,matrizResultados);
         matrizSolucion = ResuelveSistema.solveSystem(matrizEcuaciones, matrizResultados);
         
         
@@ -357,7 +354,7 @@ public class ResistenciaGUI extends javax.swing.JFrame {
             resistencias.add(resValue);
         
             listModel = new DefaultListModel();
-            // Agrega las resistencias del lado izquierod para que se vea la 
+            // Agrega las resistencias del lado izquierdo para que se vea la 
             // lista de las ya añadidas
             for (int i = 0; i < resistencias.size(); i++){
                 listModel.addElement("R " + (i+1) + ": "+resistencias.get(i));
@@ -365,7 +362,6 @@ public class ResistenciaGUI extends javax.swing.JFrame {
 
             listaResistencia.setModel(listModel);
             agregar.hide();
-
 
             int contador = 0;
             // Agrega las resistencias en la diagonal principal.
@@ -407,6 +403,49 @@ public class ResistenciaGUI extends javax.swing.JFrame {
                 }
             }
             
+            
+            // Para llegar la 3ra diagonal exterior a la principal
+            for (int filas = 0; filas < matrizEcuaciones.length; filas++){
+                for (int columnas = 0; columnas < matrizEcuaciones.length; columnas++){
+                    if ((nodoB - nodoA == 3 || nodoA - nodoB == 3)){
+                        if (contador < 1 && (nodoA-1 <= filas || nodoB <= columnas)){
+                            contador++;
+                            matrizEcuaciones[nodoA-1][nodoB-1] = -(1/resValue);
+                            matrizEcuaciones[nodoB-1][nodoA-1] = -(1/resValue);
+                        }
+                    }
+                }
+            }
+            
+            // Para llegar la 4ta diagonal exterior a la principal
+            for (int filas = 0; filas < matrizEcuaciones.length; filas++){
+                for (int columnas = 0; columnas < matrizEcuaciones.length; columnas++){
+                    if ((nodoB - nodoA == 4 || nodoA - nodoB == 4)){
+                        if (contador < 1 && (nodoA-1 <= filas || nodoB <= columnas)){
+                            contador++;
+                            matrizEcuaciones[nodoA-1][nodoB-1] = -(1/resValue);
+                            matrizEcuaciones[nodoB-1][nodoA-1] = -(1/resValue);
+                        }
+                    }
+                }
+            }
+            
+            // Para llegar la 5ta diagonal exterior a la principal
+            for (int filas = 0; filas < matrizEcuaciones.length; filas++){
+                for (int columnas = 0; columnas < matrizEcuaciones.length; columnas++){
+                    if ((nodoB - nodoA == 5 || nodoA - nodoB == 5)){
+                        if (contador < 1 && (nodoA-1 <= filas || nodoB <= columnas)){
+                            contador++;
+                            matrizEcuaciones[nodoA-1][nodoB-1] = -(1/resValue);
+                            matrizEcuaciones[nodoB-1][nodoA-1] = -(1/resValue);
+                        }
+                    }
+                }
+            }
+            
+            // Mas de 5 diagonales seria un exceso, sin embargo se esta trabajando
+            // en un algoritmo que no tenga esta limitacion.
+           
             //Ahora habilita los botones verMatriz y resolverMatriz
             btnVerMatriz.enable(true);
             btnResolver.enable();
